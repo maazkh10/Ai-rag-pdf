@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains sensitive keys/credentials)
+.env
+.env*.local
+
+# Uploaded files / temporary uploads
+upload/
+uploads/
+
+# Local text files / logs / notes
+*.txt
+*.log
+
+# OS & System files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
