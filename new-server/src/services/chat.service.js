@@ -15,11 +15,13 @@ export const chatWithPdf = async  (question) =>{
     // search related thing 
     const relatedchunk = await searchSimilar( quertEmedding , 5)
 
-
+console.log("QUESTION:", question);
+console.log("RETRIEVED CHUNKS:", relatedchunk);
     const context = relatedchunk.map((itm)=> itm.text)
     .join("\n\n");
 
 
+    console.log("Context" , context)
     // this promopt i took from cahtgpt 
     const prompt = `
 You are a helpful AI assistant that answers questions
@@ -44,6 +46,7 @@ Answer:
 
 const answer = await genrateText(prompt)
 
+console.log("ANser frm ollama" , answer)
 return{
     question , 
     answer , 

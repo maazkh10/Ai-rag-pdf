@@ -1,4 +1,75 @@
+
+
+import { useRef, useState } from "react";
+
+import { upLoadPdf } from "../services/api";
+
+import { useNavigate } from "react-router-dom";
+
+
 const Dashboard = () => {
+  const navigation = useNavigate();
+
+
+  const fileInput = useRef(null);
+  const [uploading , setUploading] = useState(null)
+const [documents , setDocuments] = useState([])
+
+const handleFileUpload =  () =>{
+  fileInput.current?.click()
+}
+
+const handleFileChange = async (event) =>{
+  const file = event.target.files[0];
+
+  if(!file) return;
+
+  if (file.type !== "application/pdf") {
+     alert("Please upload a pdf file.")
+    return;
+  }
+
+  try {
+    setUploading(true)
+    const data = await upLoadPdf(file);
+    console.log("uploading",data);
+
+
+    // const newDocs = {
+    //   id: data.id,
+    //   name : data.name,
+    //   size : data.size,
+    //   pages : data.pages
+    // };
+
+
+
+    const newDocs = {
+      id : Date.now(),
+      name : data.file?.originalname || file.name ,
+      size : data.file?.size || file.size,
+      pages : data.data?.numPages || 0,
+      filename : data.file?.filename 
+    } ;
+
+    setDocuments((prevdoc) =>[...prevdoc, newDocs])
+
+    navigation("/document-chat", { state: { document: newDocs} });
+
+    
+// navigation("/chat", {state :{document: newDocs}})
+
+
+  } catch (error) {
+    setUploading(false)
+    console.error("Error uploading file:", error);
+  }
+  finally{
+    setUploading(false)
+    event.target.value = ""
+  }
+}
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -34,17 +105,37 @@ const Dashboard = () => {
             📄
           </div>
 
-          <h3 className="text-base font-semibold text-gray-900">
-            Upload a PDF
-          </h3>
+      
 
           <p className="mt-1 text-sm text-gray-500">
             Upload a document to start chatting with it.
           </p>
 
+
+          <p className="mt-1 text-sm text-gray-500">
+Upload a documents to start chatting with it. You can upload multiple documents and ask questions about them.
+          </p>
+
+<input 
+ref={fileInput}
+type="file"
+accept="application/pdf"
+className="hidden"
+onChange={handleFileChange}
+/>
+
+
           <button className="mt-5 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800">
             Upload PDF
           </button>
+
+
+<button 
+onClick={handleFileUpload}
+disabled={uploading}
+className="mt-5 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50">
+{uploading ? "Uploading..." : "Upload PDF"}
+</button>
 
         </div>
 

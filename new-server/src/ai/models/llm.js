@@ -33,5 +33,6 @@ export async function genrateText(prompt , option={}) {
     } catch (error) {
 
         console.error("Error in llm.js(genrate.js)", error.message)      
+        throw error;
     }
 }

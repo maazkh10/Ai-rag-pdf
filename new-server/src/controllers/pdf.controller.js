@@ -17,7 +17,9 @@ export const UploadPdf = async (req , res) =>{
             message: "File uploaded and processed successfully",
             file:{
                 originalname : req.file.originalname,
-                size : req.file.size
+                size : req.file.size,
+                filename : req.file.filename,
+                path : req.file.path
             },
             data: pdfData
         })
